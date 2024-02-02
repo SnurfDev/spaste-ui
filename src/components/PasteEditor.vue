@@ -75,7 +75,7 @@ function confirmPopup(message:string) {
 }
 
 async function deletePost() {
-  if(!await confirmPopup(`You are about to delete "${rtitle.value}", do you want to continue? (THIS ACTION CANNOT BE REVERSED)`)) return;
+  if(!await confirmPopup(`You are about to delete "${rtitle.value}", do you want to continue?`)) return;
   let response = await fetch(new URL(`/post/${props.id}`,API_ENDPOINT),{
     method: "DELETE",
     headers: {

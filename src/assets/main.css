@@ -29,3 +29,14 @@ svg text {
   padding: 25px 50px 25px 50px;
 }
 
+.circleButton {
+  cursor: pointer;
+  border: 1px solid var(--text);
+  border-radius: 25px;
+  width: 25px;
+  height: 25px;
+  text-align: center;
+  font-size: 25px;
+  padding: 5px !important;
+  line-height: 1 !important;
+}

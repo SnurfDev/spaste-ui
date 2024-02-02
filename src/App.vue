@@ -22,9 +22,9 @@ function toggleDarkmode() {
 
 <template>
   <header>
-    <WebsiteIcon class="logo" width="90" height="90" />
+    <WebsiteIcon class="logo webicon" width="90" height="90" @click="$router.push('/')" />
     <div class="wrapper">
-      <h1>Paste</h1>
+      <h1 class="webicon" @click="$router.push('/')">Paste</h1>
       <nav>
         <RouterLink to="/">
           <span class="material-symbols-outlined circleButton" title="Create Post">add</span>
@@ -82,16 +82,7 @@ nav {
   }
 }
 a:has(.circleButton) {line-height: 1!important;}
-.circleButton {
-  border: 1px solid var(--text);
-  border-radius: 25px;
-  width: 25px;
-  height: 25px;
-  text-align: center;
-  font-size: 25px;
-  padding: 5px !important;
-  line-height: 1 !important;
-}
+
 .profileButton {
   display: flex;
   width: fit-content !important;
@@ -104,5 +95,9 @@ a:has(.circleButton) {line-height: 1!important;}
   }
   font-size: 15px;
   align-items: center;
+}
+
+.webicon {
+  cursor: pointer;
 }
 </style>

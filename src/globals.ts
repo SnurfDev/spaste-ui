@@ -11,7 +11,7 @@ export type User = {
   id: number,
   username: string,
   password?:string,
-  joindate?: number
+  joindate?: number,
   posts?: {
     title:string,
     id: number,
