@@ -5,6 +5,7 @@ import { type Post, type ApiResponse, API_ENDPOINT } from '@/globals'
 import { useAccountStore } from '@/stores/accountStore'
 import router from '@/router'
 import { typeMap } from '@/typeMap'
+import Popup from '@/components/ButtonPopup.vue'
 
 let supportedLangs = Object.keys(typeMap);
 let accs = useAccountStore();
@@ -57,6 +58,35 @@ async function postOrEdit() {
     reditMode.value = false;
   }
 }
+
+let confirmData = ref({
+  message: "",
+  open: false,
+});
+let popupCb:(success:boolean)=>void;
+
+
+function confirmPopup(message:string) {
+  confirmData.value = {
+    open:true,
+    message
+  };
+  return new Promise(res=>popupCb = res);
+}
+
+async function deletePost() {
+  if(!await confirmPopup(`You are about to delete "${rtitle.value}", do you want to continue? (THIS ACTION CANNOT BE REVERSED)`)) return;
+  let response = await fetch(new URL(`/post/${props.id}`,API_ENDPOINT),{
+    method: "DELETE",
+    headers: {
+      "Authorization": "Bearer "+accs.token
+    },
+  });
+  if(response.status == 200) {
+    await router.push("/");
+  }
+}
+
 async function copyToClipboard(event:Event) {
   let ip = event.target as HTMLInputElement;
   await navigator.clipboard.writeText(rcontent.value);
@@ -66,7 +96,7 @@ async function copyToClipboard(event:Event) {
 
 function downloadFile() {
   let a = document.createElement("a");
-  a.download = rtitle.value+(rtitle.value.match(/(\.)[^.]+$/m)?"":typeMap[rlang.value].exts[0]);
+  a.download = rtitle.value+"."+(rtitle.value.match(/(\.)[^.]+$/m)?"":typeMap[rlang.value].exts[0]);
   a.href = `data:text/${rlang.value};base64,${btoa(rcontent.value)}`;
   a.click();
 }
@@ -74,6 +104,11 @@ function downloadFile() {
 </script>
 
 <template>
+  <Popup :open="confirmData.open" @submit="confirmData.open = false">
+    <p :style="{gridColumn:'1/3'}">{{confirmData.message}}</p>
+    <input name="confirm" value="Confirm" type="submit" @click="popupCb(true)">
+    <input name="cancel" value="Cancel" type="submit" @click="popupCb(false)">
+  </Popup>
   <div id="createPaste" class="viewBox" v-if="!notFound">
     <h1 v-if="reditMode">{{isEditing?'Edit Paste':'New Paste'}}</h1>
     <div class="pasteParams">
@@ -83,10 +118,13 @@ function downloadFile() {
       <select v-model="rlang" :disabled="!reditMode">
         <option v-for="(slang,i) in supportedLangs" :key="i" :value="slang" :name="slang">{{slang}}</option>
       </select>
-      <input v-if="rownerId && (rownerId == accs.userData.id  || accs.userData.isAdmin)" type="button" @click="reditMode=true" value="Edit">
+      <input v-if="rownerId && (rownerId == accs.userData.id  || accs.userData.isAdmin) && !reditMode" type="button" @click="reditMode=true" id="editBtn" value="Edit">
     </div>
     <CodeArea :value="rcontent" :language="rlang" class="codeInput" @code-input="(c:string)=>rcontent=c" :disabled="!reditMode"></CodeArea>
-    <input v-if="reditMode" @click="postOrEdit" type="submit" value="Post!">
+    <div v-if="reditMode" class="postButtons">
+      <input @click="postOrEdit" type="submit" value="Post!">
+      <input v-if="rownerId && (rownerId == accs.userData.id  || accs.userData.isAdmin)" @click="deletePost" type="submit" value="Delete!">
+    </div>
     <div v-else id="viewerOptions">
       <input type="button" value="Copy" @click="copyToClipboard">
       <input type="button" value="Download" @click="downloadFile">
@@ -112,12 +150,20 @@ function downloadFile() {
         }
       }
     }
-    .pasteParams:first-child:nth-last-child(3) {
-      grid-template-columns: 8fr 2fr 1fr;
+    .postButtons {
+      display: grid;
+      gap: 5px;
+      grid-template-columns: 4fr 1fr;
+    }
+    .postButtons:has(:first-child:last-child) {
+      grid-template-columns: 1fr !important;
+    }
+    .pasteParams:not(:has(#editBtn)) {
+      grid-template-columns: 4fr 1fr;
     }
     .pasteParams {
       display: grid;
-      grid-template-columns: 4fr 1fr;
+      grid-template-columns: 8fr 2fr 1fr;
       height: 50px;
       gap: 5px;
       width: 100%;
@@ -138,19 +184,14 @@ function downloadFile() {
     .codeInput {
       width: 90vw !important;
     }
-
+    .pasteParams>:nth-child(1) {grid-column: 1/3}
     .pasteParams {
-      grid-template-columns: 1fr !important;
+      grid-template-columns: 1fr 1fr !important;
       grid-template-rows: 1fr 1fr !important;
       height: 115px !important;
     }
-    .pasteParams:nth-child(3) {
-      grid-column: 1/3;
-    }
+    .pasteParams:not(:has(#editBtn))>:nth-child(2) {grid-column: 1/3}
 
-    .pasteParams:first-child:nth-last-child(3) {
-      grid-template-columns: 1fr 1fr ;
-    }
   }
   .codeInput {
     width: 50vw;

@@ -28,7 +28,7 @@
     let data:ApiResponse<string> = await response.json();
     if(data.success) {
       await setToken(data.data);
-      await router.push("/");
+      await router.back()
     }else{
       lastError.value = data.reason??"";
     }

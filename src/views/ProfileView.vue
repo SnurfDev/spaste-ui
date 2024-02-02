@@ -56,7 +56,7 @@ main {
   gap: 10px;
 
   a {
-    border: 1px solid white;
+    border: 1px solid var(--text);
     border-radius: 15px;
     padding: 15px;
   }
