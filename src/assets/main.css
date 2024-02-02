@@ -1,0 +1,31 @@
+@import './base.css';
+
+body {
+  margin: 0;
+}
+
+#app {
+  width: 100%;
+  margin: 0 auto;
+  font-weight: normal;
+}
+
+a {
+  text-decoration: none;
+  color: var(--text);
+}
+
+svg path {
+  stroke: var(--text) !important;
+}
+svg text {
+  fill: var(--text) !important;
+}
+
+.viewBox {
+  border: 1px solid var(--text);
+  border-radius: 10px;
+  box-shadow: var(--background-modified) 10px 10px;
+  padding: 25px 50px 25px 50px;
+}
+
