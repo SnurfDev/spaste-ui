@@ -1,0 +1,13 @@
+name: Trigger Node.js CI in server repo
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Trigger
+        run: |
+          curl -XPOST -u "snurfdev:${{secrets.PAT}}" -H "Accept: application/vnd.github.everest-preview+json" -H "Content-Type: application/json" https://api.github.com/repos/snurfdev/spaste-server/actions/workflows/main.yaml/dispatches --data '{"ref": "master"}'
