@@ -19,5 +19,21 @@
     "description": "Upload scripts and code and share them with the world!",
     "id": "/",
     "display": "standalone",
-    "display_override": "fullscreen"
+    "display_override": "fullscreen",
+    "screenshots": [
+        {
+            "src": "/screenshot_wide.png",
+            "sizes": "3840x1986",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Home Screen"
+        },
+        {
+            "src": "/screenshot_phone.png",
+            "sizes": "824x1792",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Home Screen"
+        }
+    ]
 }
