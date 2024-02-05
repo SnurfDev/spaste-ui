@@ -99,6 +99,25 @@ async function copyContentToClipboard(e: Event) {
   setTimeout(()=>ip.innerText = "content_copy",1000);
 }
 
+function generateRunCommand() {
+  const baseUrl = `${API_ENDPOINT}post/${props.id}/raw`
+  switch (rdata.value.lang) {
+    case "javascript":
+    case "js":
+      return `curl -s ${baseUrl} | node`;
+    case "typescript":
+    case "ts":
+      return `curl -s ${baseUrl} | ts-node`;
+    case "bash":
+    case "shell":
+    case "sh":
+      return `curl -s ${baseUrl} | bash`;
+
+    default:
+      return baseUrl;
+  }
+}
+
 
 </script>
 
@@ -129,7 +148,7 @@ async function copyContentToClipboard(e: Event) {
       <input v-if="rdata.ownerId && (rdata.ownerId == accs.userData.id  || accs.userData.isAdmin)" @click="deletePost" type="submit" value="Delete!">
     </div>
     <div v-else id="viewerOptions">
-      <input type="url" :value="`${['bash','sh']?'curl -s ':''}${API_ENDPOINT}post/${$route.params.id}/raw${['bash','sh']?' | bash -s':''}`" @keydown.prevent @click="(e)=>{
+      <input type="url" :value="generateRunCommand()" @keydown.prevent @click="(e)=>{
         (e.target as HTMLInputElement).setSelectionRange(0,(e.target as HTMLInputElement).value.length)
         copyToClipboard((e.target as HTMLInputElement).value);
       }">
