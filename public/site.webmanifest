@@ -5,11 +5,19 @@
         {
             "src": "/icons/dark/android-chrome-192x192.png",
             "sizes": "192x192",
+            "purpose": "maskable",
             "type": "image/png"
         },
         {
             "src": "/icons/dark/android-chrome-512x512.png",
             "sizes": "512x512",
+            "purpose": "maskable",
+            "type": "image/png"
+        },
+        {
+            "src": "/icons/monochrome.png",
+            "sizes": "150x150",
+            "purpose": "maskable monochrome",
             "type": "image/png"
         }
     ],

@@ -11,6 +11,12 @@
             "src": "/icons/light/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
+        },
+        {
+            "src": "/icons/monochrome.png",
+            "sizes": "150x150",
+            "purpose": "maskable monochrome",
+            "type": "image/png"
         }
     ],
     "theme_color": "#ffffff",
