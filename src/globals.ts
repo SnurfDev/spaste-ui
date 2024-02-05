@@ -1,6 +1,5 @@
 
-
-export const API_ENDPOINT =  "http://localhost:8080/api/"
+export const API_ENDPOINT =  import.meta.env.VITE_API_BASE??"http://localhost:8080/api/"
 
 export type ApiResponse<T extends any> = {
   success: boolean,
