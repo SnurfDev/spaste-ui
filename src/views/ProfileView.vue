@@ -14,7 +14,7 @@ import moment from 'moment'
 
 
   if(route.params.id) {
-    fetch(new URL(`/user/${route.params.id}`,API_ENDPOINT),{
+    fetch(new URL(`user/${route.params.id}`,API_ENDPOINT),{
       headers: {
         "Authorization": "Bearer "+accStore.token
       }

@@ -4,7 +4,7 @@ import { ref } from 'vue'
 import WebsiteIcon from '@/components/icons/WebsiteIcon.vue'
 import { useAccountStore } from '@/stores/accountStore'
 
-let isDarkMode = ref("true" === (localStorage.getItem("darkMode")));
+let isDarkMode = ref(localStorage.getItem("darkMode")?("true" === (localStorage.getItem("darkMode"))):true);
 if(isDarkMode.value) document.body.classList.add("dark");
 setTimeout(()=>document.body.classList.add("fadeDarkMode"));
 

@@ -1,6 +1,6 @@
 
 
-export const API_ENDPOINT = "http://localhost:8080/"
+export const API_ENDPOINT =  "http://localhost:8080/api/"
 
 export type ApiResponse<T extends any> = {
   success: boolean,

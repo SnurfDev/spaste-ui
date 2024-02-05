@@ -6,7 +6,7 @@ import PasteEditor from '@/components/PasteEditor.vue'
 
 <template>
   <main>
-    <PasteEditor is-editing :id="$route.params.id"></PasteEditor>
+    <PasteEditor is-editing :id="Number($route.params.id)"></PasteEditor>
   </main>
 </template>
 

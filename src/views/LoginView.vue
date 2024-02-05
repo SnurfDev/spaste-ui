@@ -15,7 +15,7 @@
 
   async function tryLogin() {
     if(!username.value || !password.value) return;
-    let response = await fetch(new URL("/login",API_ENDPOINT),{
+    let response = await fetch(new URL("login",API_ENDPOINT),{
       method: "POST",
       headers: {
         "Content-Type": "application/json"

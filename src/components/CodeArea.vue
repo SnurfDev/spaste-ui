@@ -54,6 +54,7 @@ watch(()=>props.value,(f)=>{
 
 <template>
   <div class="codeArea">
+    <slot></slot>
     <pre :class="['language-'+language]" :style="{height:`${cheight}px`,width:`${cwidth}px`}"><code v-html="highlight(codeVal)"></code></pre>
     <textarea v-model="codeVal" @input="inputHandler" @keydown="keyHandler" spellcheck="false" :disabled="disabled" :style="{width:`${cwidth}px`}"></textarea>
   </div>

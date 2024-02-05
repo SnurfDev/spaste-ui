@@ -20,36 +20,38 @@ function extToLang(ext:string) {
   return (Object.entries(typeMap).find(v=>v[1].exts.includes(ext))??["plain"])[0];
 }
 
-let rtitle = ref("");
-let rlang = ref("plain");
-let rcontent = ref("");
-let rownerId = ref(accs.userData.id);
-let rownerName = ref("anonymous")
+let rdata = ref({
+  title: "",
+  lang: "plain",
+  content: "",
+  ownerId: accs.userData.id,
+  ownerName: accs.userData.username
+})
 let reditMode = ref(props.canEdit);
 
 let notFound = ref(false);
 
 if(props.id) {
-  fetch(new URL(`/post/${props.id}`,API_ENDPOINT)).then(r=>r.json()).then((d:ApiResponse<Post>)=>{
-    rtitle.value = d.data.title;
-    rlang.value = d.data.lang;
-    rcontent.value = d.data.content;
-    rownerId.value = d.data.ownerId;
-    rownerName.value = d.data.ownerName
+  fetch(new URL(`post/${props.id}`,API_ENDPOINT)).then(r=>r.json()).then((d:ApiResponse<Post>)=>{
+    rdata.value.title = d.data.title;
+    rdata.value.lang = d.data.lang;
+    rdata.value.content = d.data.content;
+    rdata.value.ownerId = d.data.ownerId;
+    rdata.value.ownerName = d.data.ownerName
   }).catch(()=>notFound.value = true)
 }
 
 async function postOrEdit() {
-  let response = await fetch(new URL(props.isEditing?`/post/${props.id}`:`/post`,API_ENDPOINT),{
+  let response = await fetch(new URL(props.isEditing?`post/${props.id}`:`post`,API_ENDPOINT),{
     method: props.isEditing?"PATCH":"POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer "+accs.token
     },
     body: JSON.stringify({
-      title: rtitle.value ?? "Untitled",
-      lang: rlang.value,
-      content: rcontent.value
+      title: rdata.value.title ?? "Untitled",
+      lang: rdata.value.lang,
+      content: rdata.value.content
     })
   });
   let {success,data}: ApiResponse<number> = await response.json();
@@ -75,8 +77,8 @@ function confirmPopup(message:string) {
 }
 
 async function deletePost() {
-  if(!await confirmPopup(`You are about to delete "${rtitle.value}", do you want to continue?`)) return;
-  let response = await fetch(new URL(`/post/${props.id}`,API_ENDPOINT),{
+  if(!await confirmPopup(`You are about to delete "${rdata.value.title}", do you want to continue?`)) return;
+  let response = await fetch(new URL(`post/${props.id}`,API_ENDPOINT),{
     method: "DELETE",
     headers: {
       "Authorization": "Bearer "+accs.token
@@ -87,19 +89,16 @@ async function deletePost() {
   }
 }
 
-async function copyToClipboard(event:Event) {
-  let ip = event.target as HTMLInputElement;
-  await navigator.clipboard.writeText(rcontent.value);
-  ip.value = "Copied!"
-  setTimeout(()=>ip.value = "Copy",1000);
+async function copyToClipboard(text:string) {
+  await navigator.clipboard.writeText(text);
+}
+async function copyContentToClipboard(e: Event) {
+  let ip = (e.target as HTMLInputElement);
+  await copyToClipboard(rdata.value.content);
+  ip.innerText = "done"
+  setTimeout(()=>ip.innerText = "content_copy",1000);
 }
 
-function downloadFile() {
-  let a = document.createElement("a");
-  a.download = rtitle.value+"."+(rtitle.value.match(/(\.)[^.]+$/m)?"":typeMap[rlang.value].exts[0]);
-  a.href = `data:text/${rlang.value};base64,${btoa(rcontent.value)}`;
-  a.click();
-}
 
 </script>
 
@@ -112,22 +111,29 @@ function downloadFile() {
   <div id="createPaste" class="viewBox" v-if="!notFound">
     <h1 v-if="reditMode">{{isEditing?'Edit Paste':'New Paste'}}</h1>
     <div class="pasteParams">
-      <input v-if="reditMode" type="text" placeholder="Title..." v-model="rtitle" @input="(rlang = extToLang((rtitle.match(/[^.]+$/m)??['txt'])[0]))">
-      <h1 v-else>{{rtitle}} <sub>By <a :href="`/profile/${rownerId}`">{{rownerName}}</a></sub></h1>
+      <input v-if="reditMode" type="text" placeholder="Title..." v-model="rdata.title" @input="(rdata.lang = extToLang((rdata.title.match(/[^.]+$/m)??['txt'])[0]))">
+      <h1 v-else>{{rdata.title}} <sub>By <a :href="`/profile/${rdata.ownerId}`">{{rdata.ownerName}}</a></sub></h1>
 
-      <select v-model="rlang" :disabled="!reditMode">
+      <select v-model="rdata.lang" :disabled="!reditMode">
         <option v-for="(slang,i) in supportedLangs" :key="i" :value="slang" :name="slang">{{slang}}</option>
       </select>
-      <input v-if="rownerId && (rownerId == accs.userData.id  || accs.userData.isAdmin) && !reditMode" type="button" @click="reditMode=true" id="editBtn" value="Edit">
+      <input v-if="rdata.ownerId && (rdata.ownerId == accs.userData.id  || accs.userData.isAdmin) && !reditMode" type="button" @click="reditMode=true" id="editBtn" value="Edit">
     </div>
-    <CodeArea :value="rcontent" :language="rlang" class="codeInput" @code-input="(c:string)=>rcontent=c" :disabled="!reditMode"></CodeArea>
+    <CodeArea :value="rdata.content" :language="rdata.lang" class="codeInput" @code-input="(c:string)=>rdata.content=c" :disabled="!reditMode">
+      <span v-if="!reditMode" class="material-symbols-outlined" id="copyBtn" @click="copyContentToClipboard">
+        content_copy
+      </span>
+    </CodeArea>
     <div v-if="reditMode" class="postButtons">
       <input @click="postOrEdit" type="submit" value="Post!">
-      <input v-if="rownerId && (rownerId == accs.userData.id  || accs.userData.isAdmin)" @click="deletePost" type="submit" value="Delete!">
+      <input v-if="rdata.ownerId && (rdata.ownerId == accs.userData.id  || accs.userData.isAdmin)" @click="deletePost" type="submit" value="Delete!">
     </div>
     <div v-else id="viewerOptions">
-      <input type="button" value="Copy" @click="copyToClipboard">
-      <input type="button" value="Download" @click="downloadFile">
+      <input type="url" :value="`${['bash','sh']?'curl -s ':''}${API_ENDPOINT}post/${$route.params.id}/raw${['bash','sh']?' | bash -s':''}`" @keydown.prevent @click="(e)=>{
+        (e.target as HTMLInputElement).setSelectionRange(0,(e.target as HTMLInputElement).value.length)
+        copyToClipboard((e.target as HTMLInputElement).value);
+      }">
+      <a :href="`${API_ENDPOINT}post/${$route.params.id}/raw?attachment=true`"><input type="button" value="Download"></a>
     </div>
   </div>
 </template>
@@ -151,6 +157,7 @@ function downloadFile() {
       }
     }
     .postButtons {
+      font-size: 10px;
       display: grid;
       gap: 5px;
       grid-template-columns: 4fr 1fr;
@@ -205,6 +212,21 @@ function downloadFile() {
 
     * {
       width: 100%;
+      font-size: 20px !important;
     }
+  }
+
+  #copyBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 101;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 100%;
+    border: 1px solid transparent;
+  }
+  #copyBtn:hover {
+    background-color: #0003;
   }
 </style>

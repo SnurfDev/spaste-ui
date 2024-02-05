@@ -13,7 +13,7 @@ export const useAccountStore = defineStore('counter', {
     async setToken(token:string) {
       this.token = token;
 
-      const response = await fetch(new URL("/user/@me",API_ENDPOINT),{
+      const response = await fetch(new URL("user/@me",API_ENDPOINT),{
         headers:{
           "Authorization":"Bearer "+token
         }
