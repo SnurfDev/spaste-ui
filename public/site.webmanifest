@@ -16,5 +16,8 @@
     "theme_color": "#ffffff",
     "background_color": "#ffffff",
     "start_url": "https://paste.snurf.dev",
-    "display": "standalone"
+    "description": "Upload scripts and code and share them with the world!",
+    "id": "/",
+    "display": "standalone",
+    "display_override": "fullscreen"
 }
