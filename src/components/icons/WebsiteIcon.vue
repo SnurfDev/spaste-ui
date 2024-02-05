@@ -1,7 +1,7 @@
 
 <template>
 
-  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="150" height="150" viewBox="50 15 300 500" xml:space="preserve">
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="150" height="150" viewBox="100 15 300 500" xml:space="preserve">
 <desc>Created with Fabric.js 5.3.0</desc>
     <defs>
 </defs>

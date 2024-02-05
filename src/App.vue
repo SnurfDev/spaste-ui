@@ -4,8 +4,30 @@ import { ref } from 'vue'
 import WebsiteIcon from '@/components/icons/WebsiteIcon.vue'
 import { useAccountStore } from '@/stores/accountStore'
 
+function setDarkmode() {
+  if (isDarkMode.value) document.body.classList.add("dark");
+  else document.body.classList.remove("dark");
+
+  let swIcons = document.querySelectorAll(".icon_switchable");
+  const color = isDarkMode.value?"#222222":"#ffffff"
+  swIcons.forEach(v=>{
+    if(v.classList.contains("color")) {
+      v.setAttribute("content",color);
+      v.setAttribute("color",color);
+    }else if(v.classList.contains("image")) {
+      v.setAttribute(
+        "href",
+        (v.getAttribute("href")??"").replace(/\/(light|dark)\//g,isDarkMode.value?"/dark/":"/light/")
+      );
+    }else if(v.classList.contains("manifest")) {
+      v.setAttribute("href",isDarkMode.value?"/site.webmanifest":"/site_lightmode.webmanifest")
+    }
+
+  })
+}
+
 let isDarkMode = ref(localStorage.getItem("darkMode")?("true" === (localStorage.getItem("darkMode"))):true);
-if(isDarkMode.value) document.body.classList.add("dark");
+setDarkmode();
 setTimeout(()=>document.body.classList.add("fadeDarkMode"));
 
 let accountStore = useAccountStore();
@@ -14,15 +36,15 @@ accountStore.setToken(accountStore.token)
 function toggleDarkmode() {
   isDarkMode.value = !isDarkMode.value;
   localStorage.setItem("darkMode", String(isDarkMode.value));
-  if (isDarkMode.value) document.body.classList.add("dark");
-  else document.body.classList.remove("dark");
+  setDarkmode()
 }
+
 
 </script>
 
 <template>
   <header>
-    <WebsiteIcon class="logo webicon" width="90" height="90" @click="$router.push('/')" />
+    <WebsiteIcon class="logo webicon" width="80" height="80" @click="$router.push('/')" />
     <div class="wrapper">
       <h1 class="webicon" @click="$router.push('/')">Paste</h1>
       <nav>
@@ -32,7 +54,7 @@ function toggleDarkmode() {
         <RouterLink v-if="accountStore.loggedIn" :to="`/profile/${accountStore.userData.id}`">
           <div class="circleButton profileButton" title="View Profile">
             <span class="material-symbols-outlined">person</span>
-            {{accountStore.userData.username}}
+            {{accountStore.userData.username.length}}
           </div>
         </RouterLink>
         <RouterLink v-else to="/login">
@@ -58,7 +80,7 @@ header {
   height: 100px;
   display: grid;
   align-items: center;
-  grid-template-columns: 90px 1fr;
+  grid-template-columns: 80px 1fr;
 }
 .wrapper {
   display: flex;
