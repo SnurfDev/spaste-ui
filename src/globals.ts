@@ -1,5 +1,6 @@
 
-export const API_ENDPOINT =  import.meta.env.VITE_API_BASE??"http://localhost:8080/api/"
+const config = (window as unknown as Window & {config: {[key:string]:string}}).config;
+export const API_ENDPOINT = config.API_URL
 
 export type ApiResponse<T extends any> = {
   success: boolean,
