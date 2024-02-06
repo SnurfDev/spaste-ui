@@ -54,7 +54,7 @@ function toggleDarkmode() {
         <RouterLink v-if="accountStore.loggedIn" :to="`/profile/${accountStore.userData.id}`">
           <div class="circleButton profileButton" title="View Profile">
             <span class="material-symbols-outlined">person</span>
-            {{accountStore.userData.username.length}}
+            <span>{{accountStore.userData.username}}</span>
           </div>
         </RouterLink>
         <RouterLink v-else to="/login">
@@ -105,15 +105,19 @@ nav {
 }
 a:has(.circleButton) {line-height: 1!important;}
 
+@media only screen and (max-width:500px) {
+  .profileButton > span:not(.material-symbols-outlined) {
+    display: none;
+  }
+}
+
 .profileButton {
   display: flex;
-  width: fit-content !important;
   flex-direction: row;
+  width: fit-content;
 
-  svg {
-    padding-right: 5px;
-    width: 20px;
-    aspect-ratio: 1/1;
+  span {
+    max-width: 90%;
   }
   font-size: 15px;
   align-items: center;

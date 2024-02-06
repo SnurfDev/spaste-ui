@@ -71,7 +71,7 @@ body.fadeDarkMode {
           'opsz' 24;
 }
 
-@media only screen and (max-width: 1400px) {
+@media only screen and (max-width: 800px) {
   .viewBox {
     padding: 10px !important;
   }

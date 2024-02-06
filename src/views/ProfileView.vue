@@ -72,6 +72,11 @@ main {
   width: 50vw;
   height: 75vh;
 }
+@media only screen and (max-width:800px) {
+  .content {
+    width: 90vw !important;
+  }
+}
 #postList {
   display: flex;
   flex-direction: column;

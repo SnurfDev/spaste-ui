@@ -206,10 +206,7 @@ function generateRunCommand() {
     }
     input {height: 50px;font-size: 25px;};
   }
-  @media only screen and (max-width: 1400px) {
-    .codeInput {
-      width: 90vw !important;
-    }
+  @media only screen and (max-width:800px) {
     .pasteParams>:nth-child(1) {grid-column: 1/3}
     .pasteParams {
       grid-template-columns: 1fr 1fr !important;
@@ -218,9 +215,12 @@ function generateRunCommand() {
     }
     .pasteParams:not(:has(#editBtn))>:nth-child(2) {grid-column: 1/3}
 
+    .codeInput {
+      width: 90vw !important;
+    }
   }
   .codeInput {
-    width: 50vw;
+    width: 100%;
     height: 50vh;
   }
   #viewerOptions {

@@ -11,30 +11,34 @@
  limitations under the License.
  */
 
+// **CACHING DISABLED FOR TESTING**
+
+
 // Names of the two caches used in this version of the service worker.
 // Change to v2, etc. when you update any of the local resources, which will
 // in turn trigger the install event again.
-const PRECACHE = 'precache-v0.1';
-const RUNTIME = 'runtime-v0.1';
+//const PRECACHE = 'precache-v0.1';
+//const RUNTIME = 'runtime-v0.1';
 
 // A list of local resources we always want to be cached.
-const PRECACHE_URLS = [
+/*const PRECACHE_URLS = [
   'index.html',
   'prism.css', // Alias for index.html
   'prism.js',
-];
+];*/
 
 // The install handler takes care of precaching the resources we always need.
+/*
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(PRECACHE)
       .then(cache => cache.addAll(PRECACHE_URLS))
       .then(self.skipWaiting())
   );
-});
+});*/
 
 // The activate handler takes care of cleaning up old caches.
-self.addEventListener('activate', event => {
+/*self.addEventListener('activate', event => {
   const currentCaches = [PRECACHE, RUNTIME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -45,12 +49,14 @@ self.addEventListener('activate', event => {
       }));
     }).then(() => self.clients.claim())
   );
-});
+});*/
 
 // The fetch handler serves responses for same-origin resources from a cache.
 // If no response is found, it populates the runtime cache with the response
 // from the network before returning it to the page.
 self.addEventListener('fetch', event => {
+  event.respondWith(fetch(event.request));
+  /*
   // Skip cross-origin requests, like those for Google Analytics and api calls.
   if (event.request.url.startsWith(self.location.origin) && !event.request.url.includes("api")) {
     event.respondWith(
@@ -69,5 +75,5 @@ self.addEventListener('fetch', event => {
         });
       })
     );
-  }
+  }*/
 });
