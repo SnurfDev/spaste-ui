@@ -19,7 +19,7 @@
 </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .popup {
   position: absolute;
   left: 0;

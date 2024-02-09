@@ -9,12 +9,13 @@ export type ApiResponse<T extends any> = {
 }
 export type User = {
   id: number,
+  uuid: string,
   username: string,
   password?:string,
   joindate?: number,
   posts?: {
     title:string,
-    id: number,
+    uuid: string,
     created: number
   }[],
   isAdmin?: number
@@ -22,11 +23,13 @@ export type User = {
 
 export type Post = {
   id: number,
+  uuid: string,
   title: string,
   lang: string,
   content: string,
   created: number,
   edited: number,
-  ownerId: number,
+  ownerId: string,
   ownerName: string
 }
+export const ANONID = "00000000-0000-0000-0000-000000000000";

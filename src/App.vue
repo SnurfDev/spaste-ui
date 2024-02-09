@@ -51,7 +51,7 @@ function toggleDarkmode() {
         <RouterLink to="/">
           <span class="material-symbols-outlined circleButton" title="Create Post">add</span>
         </RouterLink>
-        <RouterLink v-if="accountStore.loggedIn" :to="`/profile/${accountStore.userData.id}`">
+        <RouterLink v-if="accountStore.loggedIn" :to="`/profile/${accountStore.userData.uuid}`">
           <div class="circleButton profileButton" title="View Profile">
             <span class="material-symbols-outlined">person</span>
             <span>{{accountStore.userData.username}}</span>

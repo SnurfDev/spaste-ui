@@ -12,7 +12,6 @@ import moment from 'moment'
   let userData = ref<User>(accStore.userData);
   let isInPostView = ref(false);
 
-
   if(route.params.id) {
     fetch(new URL(`user/${route.params.id}`,API_ENDPOINT),{
       headers: {
@@ -36,7 +35,7 @@ import moment from 'moment'
         <h1><span class="material-symbols-outlined circleButton" @click="isInPostView=false">arrow_back</span> {{userData.username}}'s Posts</h1>
 
         <div id="postList" class="scrollContent">
-          <RouterLink v-for="(post,i) in userData.posts" :key="i" :to="`/post/${post.id}`">
+          <RouterLink v-for="(post,i) in userData.posts" :key="i" :to="`/post/${post.uuid}`">
             <h3>{{post.title}}</h3>
             <span>Created {{moment((post.created??0)*1000).fromNow()}}</span>
           </RouterLink>
@@ -50,7 +49,7 @@ import moment from 'moment'
         <p>Joined {{moment((userData.joindate??0)*1000).fromNow()}}</p>
         <h3>Recent Posts:</h3>
         <div id="postList">
-          <RouterLink v-for="(post,i) in userData.posts?.slice(0,4)" :key="i" :to="`/post/${post.id}`">
+          <RouterLink v-for="(post,i) in userData.posts?.slice(0,4)" :key="i" :to="`/post/${post.uuid}`">
             <h3>{{post.title}}</h3>
             <span>Created {{moment((post.created??0)*1000).fromNow()}}</span>
           </RouterLink>
@@ -61,7 +60,7 @@ import moment from 'moment'
   </main>
 </template>
 
-<style>
+<style lang="scss" scoped>
 main {
   display: flex;
   align-items: center;

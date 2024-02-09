@@ -1,12 +1,12 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import { API_ENDPOINT, type ApiResponse, type User } from '@/globals'
+import { ANONID, API_ENDPOINT, type ApiResponse, type User } from '@/globals'
 import { useSessionStorage } from '@vueuse/core'
 
-export const useAccountStore = defineStore('counter', {
+export const useAccountStore = defineStore('accountStore', {
   state:()=> ({
         token: useSessionStorage("token",""),
-        userData: {username:"anonymous",id:0} as User,
+        userData: {username:"anonymous",id:0,uuid:ANONID} as User,
         loggedIn: false
   }),
   actions: {
@@ -25,7 +25,7 @@ export const useAccountStore = defineStore('counter', {
         this.loggedIn = true;
         console.log(this.loggedIn)
       }else{
-        this.userData = {username:"anonymous",id:0}
+        this.userData = {username:"anonymous",id:0,uuid:ANONID}
         this.loggedIn = false;
       }
     }

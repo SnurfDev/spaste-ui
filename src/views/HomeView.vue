@@ -10,7 +10,7 @@ import PasteEditor from '@/components/PasteEditor.vue'
   </main>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
   main {
     display: flex;
     align-items: center;

@@ -13,17 +13,41 @@ const emit = defineEmits(['code-input'])
 let cheight = ref(0);
 let cwidth = ref(0);
 function highlight(text:string):string {
-  return props.language?Prism.highlight(text,window.Prism.languages[props.language],props.language):text;
+  return props.language?Prism.highlight(text,Prism.languages[props.language],props.language):text;
+}
+
+const autoCompleteMap:{[key:string]:string|undefined} = {
+  "'":"'",
+  "\"":"\"",
+  "[":"]",
+  "{":"}",
+  "(":")",
+  "`":"`"
 }
 function keyHandler(event:Event) {
   let kv = event as KeyboardEvent;
   let ta = (kv.target as HTMLTextAreaElement)
-  if(kv.keyCode==9) {
+  if(kv.key=="Tab") {
     kv.preventDefault();
     let ss = ta.selectionStart;
-    codeVal.value = (ss?codeVal.value.substring(0,ss):"")+"    "+codeVal.value.substring(ss,codeVal.value.length);
+    let se = ta.selectionEnd;
 
-    ta.selectionStart = ss+4;
+    codeVal.value = codeVal.value.substring(0,ss)+"    "+codeVal.value.substring(se,codeVal.value.length);
+    ta.value = codeVal.value;
+    ta.setSelectionRange(ss+4,ss+4);
+  }
+  if(Object.values(autoCompleteMap).includes(kv.key) && codeVal.value[ta.selectionStart]==kv.key) {
+    kv.preventDefault();
+    ta.setSelectionRange(ta.selectionStart+1,ta.selectionStart+1)
+    return;
+  }
+  if(autoCompleteMap[kv.key] !== undefined) {
+    let ss = ta.selectionStart;
+    let se = ta.selectionEnd;
+
+    codeVal.value = codeVal.value.substring(0,ss)+autoCompleteMap[kv.key]+codeVal.value.substring(se,codeVal.value.length);
+    ta.value = codeVal.value;
+    ta.setSelectionRange(ss,ss);
   }
 }
 function inputHandler(event:Event) {
@@ -55,12 +79,21 @@ watch(()=>props.value,(f)=>{
 <template>
   <div class="codeArea">
     <slot></slot>
-    <pre :class="['language-'+language]" :style="{height:`${cheight}px`,width:`${cwidth}px`}"><code v-html="highlight(codeVal)"></code></pre>
-    <textarea v-model="codeVal" @input="inputHandler" @keydown="keyHandler" spellcheck="false" :disabled="disabled" :style="{width:`${cwidth}px`}"></textarea>
+    <pre :class="['language-'+language]" :style="{height:`${cheight}px`,width:`${cwidth}px`}">
+      <code v-html="highlight(codeVal)"></code>
+    </pre>
+    <textarea
+      v-model="codeVal"
+      @input="inputHandler"
+      @keydown="keyHandler"
+      spellcheck="false"
+      :disabled="disabled"
+      :style="{width:`${cwidth}px`}">
+    </textarea>
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
   .codeArea {
     position: relative;
     border: 1px solid var(--text);
@@ -95,6 +128,9 @@ watch(()=>props.value,(f)=>{
     width: fit-content;
     height: fit-content;
     font-size: 15px;
+    position: absolute;
+    left: 0px;
+    padding: 0px 10px;
     font-family: monospace;
     line-height: 1;
   }

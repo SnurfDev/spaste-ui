@@ -13,7 +13,7 @@ let accs = useAccountStore();
 let props = defineProps({
   isEditing: Boolean,
   canEdit: Boolean,
-  id: Number
+  id: String
 });
 
 function extToLang(ext:string) {
@@ -24,7 +24,7 @@ let rdata = ref({
   title: "",
   lang: "plain",
   content: "",
-  ownerId: accs.userData.id,
+  ownerId: accs.userData.uuid,
   ownerName: accs.userData.username
 })
 let reditMode = ref(props.canEdit);
@@ -54,7 +54,7 @@ async function postOrEdit() {
       content: rdata.value.content
     })
   });
-  let {success,data}: ApiResponse<number> = await response.json();
+  let {success,data}: ApiResponse<string> = await response.json();
   if(success) {
     await router.push(`/post/${data}`);
     reditMode.value = false;
@@ -136,7 +136,7 @@ function generateRunCommand() {
       <select v-model="rdata.lang" :disabled="!reditMode">
         <option v-for="(slang,i) in supportedLangs" :key="i" :value="slang" :name="slang">{{slang}}</option>
       </select>
-      <input v-if="rdata.ownerId && (rdata.ownerId == accs.userData.id  || accs.userData.isAdmin) && !reditMode" type="button" @click="reditMode=true" id="editBtn" value="Edit">
+      <input v-if="rdata.ownerId && (rdata.ownerId == accs.userData.uuid  || accs.userData.isAdmin) && !reditMode" type="button" @click="reditMode=true" id="editBtn" value="Edit">
     </div>
     <CodeArea :value="rdata.content" :language="rdata.lang" class="codeInput" @code-input="(c:string)=>rdata.content=c" :disabled="!reditMode">
       <span v-if="!reditMode" class="material-symbols-outlined" id="copyBtn" @click="copyContentToClipboard">
@@ -145,7 +145,7 @@ function generateRunCommand() {
     </CodeArea>
     <div v-if="reditMode" class="postButtons">
       <input @click="postOrEdit" type="submit" value="Post!">
-      <input v-if="rdata.ownerId && (rdata.ownerId == accs.userData.id  || accs.userData.isAdmin)" @click="deletePost" type="submit" value="Delete!">
+      <input v-if="rdata.ownerId && (rdata.ownerId == accs.userData.uuid  || accs.userData.isAdmin)" @click="deletePost" type="submit" value="Delete!">
     </div>
     <div v-else id="viewerOptions">
       <input type="url" :value="generateRunCommand()" @keydown.prevent @click="(e)=>{
@@ -157,7 +157,7 @@ function generateRunCommand() {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
   #createPaste {
 
     display: flex;
